@@ -17,16 +17,23 @@
     <nav class="navbar navbar-light bg-light">
         <div class="container-fluid">
             <a class=" text-uppercase fs-2 fw-bolder fst-italic text-success">Debate Forum</a>
-            <form class="d-flex">
+            <form class="d-flex" >
                 <!-- <img src="{{ url_for('static', filename = 'static/resources/face.jpg') }}" alt="dsjk" class="round-circle"> -->
-                <p class="text-end"><a href="/logout"><button class="btn btn-warning">logout</button></a></p>
+                
+                <p class="text-end"><button class="btn btn-success">User: {{ uname }}</button></p>&nbsp;&nbsp;&nbsp;&nbsp;
+                <p class="text-end"><a href="{{url_for('logout')}}"><button class="btn btn-warning" >logout</button></a></p>
             </form>
         </div>
     </nav>
 
     <!-- ADD TOPIC BTN -->
-    <div style="padding-left: 15%;">
 
+    <div class="row text-center" style="padding: 1%">
+    <div class="col-4 bg-info text-white">TOPICS </div>
+    <div class="col-4 bg-success text-white">CLAIMS </div>
+    <div class="col-4 bg-dark text-white"> Reply </div>
+    </div>
+    <div style="padding-left: 15%;">
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Add Topic</button>
     </div>
 
@@ -35,47 +42,50 @@
         <div class="col-4">
             <div class="list-group" id="list-tab" role="tablist">
                 {% for t in topics %}
-                <a class="list-group-item list-group-item-action" id="{{t[2]}}" data-bs-toggle="list" href="#{{t[2]}}" role="tab" aria-controls="home">
+                <a class="list-group-item list-group-item-action" id="list-{{t[2]}}-list" data-bs-toggle="list" href="#list-{{t[2]}}" role="tab" aria-controls="{{t[2]}}">
                     <div class="d-flex w-100 justify-content-between">
                         <h5 class="mb-1">{{t[0].split('|')[0]}}</h5>
                         <small>{{ t[1]}}</small>
                     </div>
                     <small class="mb-1">{{t[0].split('|')[1]}}</small>
                 </a>
-                                    <!-- reply input -->
-                    <form method="POST" action="{{url_for('addClaim')}}">
-                        <div class="input-group mb-3 input-group-sm">
-                            <input name="id" hidden value={{t[2]}}>
-                            <textarea type="text" class="form-control" placeholder="type new claim"
-                                style="height: 15px;" name="claim"></textarea>
-                            <input class="btn btn-secondary" type="submit" value="New Claim">
-                        </div>
-                    </form>
+                <!-- reply input -->
+                <form method="POST" action="{{url_for('addClaim')}}">
+                    <div class="input-group mb-3 input-group-sm">
+                        <input name="id" hidden value={{t[2]}}>
+                        <textarea type="text" class="form-control" placeholder="type new claim for {{t[0].split('|')[0]}}" style="height: 15px;" name="claim"></textarea>
+                        <input class="btn btn-secondary" type="submit" value="Post">
+                    </div>
+                </form>
                 {% endfor %}
             </div>
         </div>
-        <div class="col-8">
+        <div class="col-4">
             <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade active show">select a topic to view</div>
                 {% for c in claims %}
-                <div class="tab-pane fade show active" id="{{c[3]}}" role="tabpanel" aria-labelledby="list-home-list">
-                    {% for k in claims %} 
-                    {% if(k[3]==c[3]) %}
+                <div class="tab-pane fade" id="list-{{c[3]}}" role="tabpanel" aria-labelledby="list-{{c[3]}}-list">
+                    {% for k in claims %} {% if(k[3]==c[3]) %}
+
                     <strong>{{k[0].split('|')[0]}}</strong>
                     <p>{{k[0].split('|')[1]}}</p>
                     <small>{{k[1]}}</small>
-                    <hr>
-                     {% endif %} 
-                    {% endfor %}
+                    <hr> {% endif %} {% endfor %}
                     <form method="POST" action="{{url_for('addClaim')}}">
                         <div class="input-group mb-3 input-group-sm">
-                            <textarea type="text" class="form-control" placeholder="type new claim"
-                                style="height: 15px;" name="claim"></textarea>
+                            <textarea type="text" class="form-control" placeholder="type new claim" style="height: 15px;" name="claim"></textarea>
                             <input class="btn btn-secondary" type="submit" value="Reply">
                         </div>
                     </form>
                 </div>
-                
+
                 {% endfor %}
+
+            </div>
+        </div>
+                <div class="col-4">
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade active show">select a claim to view</div>
 
             </div>
         </div>
