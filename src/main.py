@@ -26,7 +26,6 @@ def loggedin():
     cnx = mysql.connector.connect(user="root", password="",
                                   host="127.0.0.1",
                                   database="test")
-
     mycursor = cnx.cursor()
     mycursor.execute("SELECT `comment`, `time`, `tid` FROM `topic` WHERE 1")
     fetched_topics = mycursor.fetchall()
@@ -34,9 +33,6 @@ def loggedin():
     fetched_claims = mycursor.fetchall()
     mycursor.execute("SELECT `comment`, `timestamp`, `rid`, `cat`, `relatedID`, `relatedIDType` FROM `reply` WHERE 1")
     fetched_replies = mycursor.fetchall()
-
-    
-    
     return render_template('login.html', topics=fetched_topics, claims=fetched_claims, replies=fetched_replies)
 
 
@@ -45,11 +41,9 @@ def home():
     if(session.get('uname')):
         print("already loggedin as:"+session['uname'])
         return redirect(url_for('loggedin'))
-
     cnx = mysql.connector.connect(user="root", password="",
                                   host="127.0.0.1",
                                   database="test")
-
     mycursor = cnx.cursor()
     mycursor.execute("SELECT `comment`, `time`, `tid` FROM `topic` WHERE 1")
     fetched_topics = mycursor.fetchall()
@@ -64,7 +58,7 @@ def home():
 def claims():
     return render_template('login.html')
 
-
+# called when login btn clicked
 @app.route('/login', methods=['POST'])
 def login():
     print("SELECT * FROM user where username='" +
@@ -88,7 +82,7 @@ def login():
         cnx.close()
         return redirect(url_for('home'))
 
-
+# called when register btn clicked
 @app.route('/register', methods=['POST'])
 def register():
     # check if pwd matches in 2 fields
@@ -128,26 +122,6 @@ def logout():
     flash('logged out successfully')
     return redirect(url_for('home'))
 
-@app.route('/addclaim',  methods=['POST'])
-def addClaim():
-    print("jk")
-        # if(session.get('uname')):
-        # print("already loggedin as:"+session['uname'])
-        # cnx = mysql.connector.connect(user="root", password="",
-        #                                   host="127.0.0.1",
-        #                                   database="test")
-
-        #     # print(request.form.get('luname',"")) #list of tuples
-        # mycursor = cnx.cursor()
-        # uid_str = uid_generator()
-        # mycursor.execute("INSERT INTO `topic`(`comment`, `time`, `tid`) VALUES ('"+request.form['title']+"|"+request.form['content']+"','"+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"','"+uid_generator()+"')")
-        # cnx.commit()
-        # if(mycursor.rowcount == 1):
-        #     cnx.close()
-
-        #     return redirect(url_for('loggedin'))
-        
-    return redirect(url_for('loggedin'))
 
 @app.route('/addtopic',  methods=['POST'])
 def addTopic():
@@ -156,8 +130,7 @@ def addTopic():
         cnx = mysql.connector.connect(user="root", password="",
                                           host="127.0.0.1",
                                           database="test")
-
-            # print(request.form.get('luname',"")) #list of tuples
+        # print(request.form.get('luname',"")) #list of tuples
         mycursor = cnx.cursor()
         uid_str = uid_generator()
         mycursor.execute("INSERT INTO `topic`(`comment`, `time`, `tid`) VALUES ('"+request.form['title']+"|"+request.form['content']+"','"+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"','"+uid_generator()+"')")
@@ -170,12 +143,45 @@ def addTopic():
         # return redirect(url_for('loggedin'))
     # return render_template('home.html')
 
+
+@app.route('/addclaim',  methods=['POST'])
+def addClaim():
+    if(session.get('uname')):
+        print("already loggedin as:"+session['uname'])
+        cnx = mysql.connector.connect(user="root", password="",
+                                          host="127.0.0.1",
+                                          database="test")
+        
+        mycursor = cnx.cursor()
+        uid_str = uid_generator()
+        print("INSERT INTO `claims`(`comment`, `timestamp`, `cid`, `relatedID`, `claimType`) VALUES ('"+request.form['claim']+"','"+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"','"+uid_generator()+"','"+request.form['id']+"','1')")
+        mycursor.execute("INSERT INTO `claims`(`comment`, `timestamp`, `cid`, `relatedID`, `claimType`) VALUES ('"+request.form['claim']+"','"+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"','"+uid_generator()+"','"+request.form['id']+"','1')")
+        cnx.commit()
+        if(mycursor.rowcount == 1):
+            cnx.close()
+
+            return redirect(url_for('loggedin'))
+        
+    return redirect(url_for('/'))
+
+
 @app.route('/addreply',  methods=['POST'])
 def addReply():
-    # if(session.get('uname')):
-    #     print("already loggedin as:"+session['uname'])
-    #     return redirect(url_for('loggedin'))
-    return render_template('home.html')
+    if(session.get('uname')):
+        print("already loggedin as:"+session['uname'])
+        cnx = mysql.connector.connect(user="root", password="",
+                                          host="127.0.0.1",
+                                          database="test")
+        mycursor = cnx.cursor()
+        uid_str = uid_generator()
+        print("INSERT INTO `claims`(`comment`, `timestamp`,`rid`, `cat`, `relatedID`, `relatedIDType`) VALUES ('"+request.form['claim']+"','"+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"','','"+uid_generator()+"','"+request.form['id']+"','1')")
+        mycursor.execute("INSERT INTO `claims`(`comment`, `timestamp`, `rid`, `cat`, `relatedID`, `relatedIDType`) VALUES ('"+request.form['claim']+"','"+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"','','"+uid_generator()+"','"+request.form['id']+"','1')")
+        cnx.commit()
+        if(mycursor.rowcount == 1):
+            cnx.close()
+            return redirect(url_for('loggedin'))
+        
+    return redirect(url_for('/'))
 
 def uid_generator(size=16, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
