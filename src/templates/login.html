@@ -17,13 +17,17 @@
 
 <body>
     <!-- HEADER -->
-    <div class="position-sticky" style="padding: 1%;">
-        <div class="row">
-            <p class="text-uppercase fs-2 fw-bolder fst-italic text-success ">Debate Forum</p>
-        <!-- <img src="{{ url_for('static', filename = 'static/resources/face.jpg') }}" alt="dsjk" class="round-circle"> -->
-            <p class="text-end"><a href="/logout"><button class="btn btn-warning">logout</button></a></p>
-        </div>
-    </div>
+    <nav class="navbar navbar-light bg-light">
+  <div class="container-fluid">
+    <a class=" text-uppercase fs-2 fw-bolder fst-italic text-success">Debate Forum</a>
+    <form class="d-flex">
+              <!-- <img src="{{ url_for('static', filename = 'static/resources/face.jpg') }}" alt="dsjk" class="round-circle"> -->
+             <p class="text-end"><a href="/logout"><button class="btn btn-warning">logout</button></a></p>
+    </form>
+  </div>
+</nav>
+            <!-- <p class="text-uppercase fs-2 fw-bolder fst-italic text-success ">Debate Forum</p> -->
+
 
     <!-- ADD TOPIC BTN -->
     <div style="padding-left: 15%;">
